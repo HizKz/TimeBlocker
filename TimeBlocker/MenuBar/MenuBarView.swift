@@ -95,22 +95,6 @@ struct MenuBarView: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button {
-                    withAnimation(.easeInOut(duration: 0.18)) {
-                        isAddingEvent.toggle()
-                    }
-                } label: {
-                    Label(isAddingEvent ? "閉じる" : "予定を追加", systemImage: isAddingEvent ? "xmark" : "plus")
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
-            }
-
-            if isAddingEvent {
-                QuickAddEventForm(model: model, isPresented: $isAddingEvent)
-                    .padding(12)
-                    .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             HStack(alignment: .top, spacing: 12) {
@@ -139,11 +123,30 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 7) {
                 Image(systemName: "calendar")
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Color.accentColor)
                 Text("予定")
                     .font(.system(.headline, design: .rounded, weight: .bold))
                 Spacer()
                 countBadge(todayEvents.count)
+                Button {
+                    withAnimation(.easeInOut(duration: 0.18)) {
+                        isAddingEvent.toggle()
+                    }
+                } label: {
+                    Image(systemName: isAddingEvent ? "xmark" : "plus")
+                        .font(.system(size: 11, weight: .bold))
+                        .frame(width: 24, height: 24)
+                        .background(.quaternary.opacity(0.65), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .help("予定を追加")
+            }
+
+            if isAddingEvent {
+                QuickAddEventForm(model: model, isPresented: $isAddingEvent)
+                    .padding(10)
+                    .background(.background.opacity(0.78), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             ScrollView {
@@ -213,10 +216,11 @@ struct MenuBarView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 1)
             }
-            .frame(height: 300)
+            .frame(maxHeight: .infinity)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 370, alignment: .top)
         .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -273,10 +277,11 @@ struct MenuBarView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 1)
             }
-            .frame(height: 300)
+            .frame(maxHeight: .infinity)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 370, alignment: .top)
         .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
