@@ -2,9 +2,12 @@ import SwiftUI
 
 struct OverlayView: View {
     let events: [CalendarEvent]
+    var notionTasks: [NotionTask] = []
+    var notionError: String? = nil
     let onOpenURL: (URL) -> Void
     let onSnooze: (Int) -> Void
     let onSkip: () -> Void
+    var onCompleteNotionTask: (String) -> Void = { _ in }
 
     var body: some View {
         ZStack {
@@ -18,7 +21,7 @@ struct OverlayView: View {
                     VStack(spacing: 0) {
                         Spacer(minLength: 0)
                         VStack(spacing: 28) {
-                            Text(events.count == 1 ? "予定が始まります" : "同時刻に始まる予定です")
+                            Text(!notionTasks.isEmpty ? "Notionタスクの期限です" : (events.count == 1 ? "予定が始まります" : "同時刻に始まる予定です"))
                                 .font(.system(size: 15, weight: .medium))
                                 .foregroundStyle(.white.opacity(0.72))
 
@@ -35,6 +38,36 @@ struct OverlayView: View {
                                 }
                             }
 
+                            if !notionTasks.isEmpty {
+                                VStack(spacing: 12) {
+                                    if let notionError {
+                                        Text(notionError).font(.caption).foregroundStyle(.red.opacity(0.95)).frame(maxWidth: 600, alignment: .leading)
+                                    }
+                                    ForEach(notionTasks) { task in
+                                        HStack(spacing: 12) {
+                                            Button { onCompleteNotionTask(task.id) } label: {
+                                                Image(systemName: "checkmark.circle")
+                                                    .font(.title2)
+                                            }
+                                            .buttonStyle(.plain)
+                                            .accessibilityLabel("\(task.title)を完了")
+                                            Button { onOpenURL(task.url) } label: {
+                                                VStack(alignment: .leading, spacing: 5) {
+                                                    Text(task.title).font(.title3.weight(.medium)).multilineTextAlignment(.leading)
+                                                    if let dueAt = task.dueAt { Text(dueAt.formatted(date: .abbreviated, time: .shortened)).font(.caption).foregroundStyle(.white.opacity(0.65)) }
+                                                }
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            .buttonStyle(.plain)
+                                            Image(systemName: "arrow.up.right.square").foregroundStyle(.white.opacity(0.55))
+                                        }
+                                        .padding(14)
+                                        .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
+                                    }
+                                }
+                                .frame(maxWidth: 600)
+                            }
+
                             HStack(spacing: 12) {
                                 Menu {
                                     ForEach([5, 10, 15], id: \.self) { minutes in
@@ -49,11 +82,11 @@ struct OverlayView: View {
                                 .buttonStyle(.bordered)
                                 .controlSize(.large)
 
-                                Button("スキップ", action: onSkip)
+                                Button("通知を閉じる", action: onSkip)
                                     .buttonStyle(.bordered)
                                     .controlSize(.large)
                                     .keyboardShortcut(.escape, modifiers: [])
-                                    .accessibilityLabel("この予定をスキップ")
+                                    .accessibilityLabel("通知を閉じる")
                             }
                         }
                         .frame(maxWidth: 660)

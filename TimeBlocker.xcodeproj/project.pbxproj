@@ -19,6 +19,8 @@
 		A0000000000000000000000B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000B /* SettingsView.swift */; };
 		A0000000000000000000000C /* EventLinkResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000C /* EventLinkResolver.swift */; };
 		A0000000000000000000000D /* CalendarColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000D /* CalendarColor.swift */; };
+		A0000000000000000000000E /* NotionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000E /* NotionTask.swift */; };
+		A0000000000000000000000F /* NotionTaskProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000F /* NotionTaskProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		B0000000000000000000000B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B0000000000000000000000C /* EventLinkResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLinkResolver.swift; sourceTree = "<group>"; };
 		B0000000000000000000000D /* CalendarColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarColor.swift; sourceTree = "<group>"; };
+		B0000000000000000000000E /* NotionTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTask.swift; sourceTree = "<group>"; };
+		B0000000000000000000000F /* NotionTaskProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTaskProvider.swift; sourceTree = "<group>"; };
 		C00000000000000000000001 /* TimeBlocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeBlocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -47,8 +51,8 @@
 		E00000000000000000000002 /* TimeBlocker */ = {isa = PBXGroup; path = TimeBlocker; sourceTree = "<group>"; children = (E00000000000000000000004 /* App */, E00000000000000000000005 /* Domain */, E00000000000000000000006 /* Providers */, E00000000000000000000007 /* Overlay */, E00000000000000000000008 /* MenuBar */, E00000000000000000000009 /* Settings */, E0000000000000000000000A /* Storage */, E0000000000000000000000B /* Utilities */, ); };
 		E00000000000000000000003 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (C00000000000000000000001 /* TimeBlocker.app */, ); };
 		E00000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B00000000000000000000001 /* TimeBlockerApp.swift */, B00000000000000000000002 /* AppDelegate.swift */, B00000000000000000000003 /* AppModel.swift */, ); };
-		E00000000000000000000005 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B00000000000000000000004 /* CalendarEvent.swift */, B0000000000000000000000C /* EventLinkResolver.swift */, ); };
-		E00000000000000000000006 /* Providers */ = {isa = PBXGroup; path = Providers; sourceTree = "<group>"; children = (B00000000000000000000005 /* EventProvider.swift */, B00000000000000000000006 /* EventKitProvider.swift */, ); };
+		E00000000000000000000005 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B00000000000000000000004 /* CalendarEvent.swift */, B0000000000000000000000C /* EventLinkResolver.swift */, B0000000000000000000000E /* NotionTask.swift */, ); };
+		E00000000000000000000006 /* Providers */ = {isa = PBXGroup; path = Providers; sourceTree = "<group>"; children = (B00000000000000000000005 /* EventProvider.swift */, B00000000000000000000006 /* EventKitProvider.swift */, B0000000000000000000000F /* NotionTaskProvider.swift */, ); };
 		E00000000000000000000007 /* Overlay */ = {isa = PBXGroup; path = Overlay; sourceTree = "<group>"; children = (B00000000000000000000008 /* OverlayManager.swift */, B00000000000000000000009 /* OverlayView.swift */, ); };
 		E00000000000000000000008 /* MenuBar */ = {isa = PBXGroup; path = MenuBar; sourceTree = "<group>"; children = (B0000000000000000000000A /* MenuBarView.swift */, ); };
 		E00000000000000000000009 /* Settings */ = {isa = PBXGroup; path = Settings; sourceTree = "<group>"; children = (B0000000000000000000000B /* SettingsView.swift */, ); };
@@ -69,7 +73,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* TimeBlockerApp.swift in Sources */, A00000000000000000000002 /* AppDelegate.swift in Sources */, A00000000000000000000003 /* AppModel.swift in Sources */, A00000000000000000000004 /* CalendarEvent.swift in Sources */, A00000000000000000000005 /* EventProvider.swift in Sources */, A00000000000000000000006 /* EventKitProvider.swift in Sources */, A00000000000000000000007 /* NotificationHistory.swift in Sources */, A00000000000000000000008 /* OverlayManager.swift in Sources */, A00000000000000000000009 /* OverlayView.swift in Sources */, A0000000000000000000000A /* MenuBarView.swift in Sources */, A0000000000000000000000B /* SettingsView.swift in Sources */, A0000000000000000000000C /* EventLinkResolver.swift in Sources */, A0000000000000000000000D /* CalendarColor.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		F00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* TimeBlockerApp.swift in Sources */, A00000000000000000000002 /* AppDelegate.swift in Sources */, A00000000000000000000003 /* AppModel.swift in Sources */, A00000000000000000000004 /* CalendarEvent.swift in Sources */, A00000000000000000000005 /* EventProvider.swift in Sources */, A00000000000000000000006 /* EventKitProvider.swift in Sources */, A00000000000000000000007 /* NotificationHistory.swift in Sources */, A00000000000000000000008 /* OverlayManager.swift in Sources */, A00000000000000000000009 /* OverlayView.swift in Sources */, A0000000000000000000000A /* MenuBarView.swift in Sources */, A0000000000000000000000B /* SettingsView.swift in Sources */, A0000000000000000000000C /* EventLinkResolver.swift in Sources */, A0000000000000000000000D /* CalendarColor.swift in Sources */, A0000000000000000000000E /* NotionTask.swift in Sources */, A0000000000000000000000F /* NotionTaskProvider.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */

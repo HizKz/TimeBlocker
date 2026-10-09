@@ -19,6 +19,21 @@ final class AppModel: ObservableObject {
     @Published private(set) var hasCalendarAccess = false
     @Published private(set) var permissionMessage = "カレンダーへのアクセスを確認しています…"
     @Published private(set) var lastUpdated: Date?
+    @Published private(set) var notionTasks: [NotionTask] = []
+    @Published private(set) var notionStatus = "Notion未設定"
+    @Published private(set) var notionSchemas: [NotionPropertySchema] = []
+    @Published private(set) var notionPropertyNames: [String] = []
+    @Published private(set) var notionToken = ""
+    @Published private(set) var activeNotionTasks: [NotionTask] = []
+    @Published private(set) var notionActionError: String?
+    @Published var notionConfiguration = NotionConfiguration() {
+        didSet {
+            if let data = try? JSONEncoder().encode(notionConfiguration) {
+                UserDefaults.standard.set(data, forKey: Self.notionConfigurationKey)
+            }
+            scheduleNotionSync()
+        }
+    }
     @Published var notificationGraceMinutes = 5 {
         didSet { UserDefaults.standard.set(notificationGraceMinutes, forKey: Self.notificationGraceKey) }
     }
@@ -45,7 +60,10 @@ final class AppModel: ObservableObject {
     private static let overlayDisplayKey = "overlayDisplayMode"
     private static let quickAddDurationKey = "quickAddDefaultDurationMinutes"
     private static let quickAddCalendarKey = "quickAddCalendarIdentifier"
+    private static let notionConfigurationKey = "notionConfiguration"
+    private static let notionHandledKey = "notionHandledTaskIDs"
     private let provider = EventKitProvider()
+    private let notionProvider = NotionTaskProvider()
     private let history = NotificationHistory()
     private let snoozeStore = SnoozeStore()
     private let overlayManager = OverlayManager()
@@ -55,6 +73,10 @@ final class AppModel: ObservableObject {
     private var snoozedBatches: [SnoozedBatch] = []
     private var queuedBatches: [PendingNotificationBatch] = []
     private var queuedSnoozeIDs: Set<String> = []
+    private var lastNotionAttempt: Date?
+    private var notionSyncTask: Task<Void, Never>?
+    private var notionSnoozes: [(ids: Set<String>, fireAt: Date)] = []
+    private var handledNotionIDs: Set<String> = []
 
     private struct PendingNotificationBatch {
         let events: [CalendarEvent]
@@ -75,8 +97,15 @@ final class AppModel: ObservableObject {
             quickAddDefaultDurationMinutes = defaults.integer(forKey: Self.quickAddDurationKey)
         }
         quickAddCalendarIdentifier = defaults.string(forKey: Self.quickAddCalendarKey) ?? ""
+        if let data = defaults.data(forKey: Self.notionConfigurationKey),
+           let configuration = try? JSONDecoder().decode(NotionConfiguration.self, from: data) {
+            notionConfiguration = configuration
+        }
+        notionToken = notionProvider.loadToken()
+        handledNotionIDs = Set(defaults.stringArray(forKey: Self.notionHandledKey) ?? [])
         installObservers()
         Task {
+            await syncNotion()
             if provider.authorizationStatus == .notDetermined {
                 await requestCalendarAccess()
             } else {
@@ -91,6 +120,10 @@ final class AppModel: ObservableObject {
                     await self.refresh()
                 } else {
                     await self.tick()
+                }
+                if !self.notionToken.isEmpty,
+                   self.lastNotionAttempt.map({ Date.now.timeIntervalSince($0) >= 60 }) ?? true {
+                    await self.syncNotion()
                 }
             }
         }
@@ -125,6 +158,7 @@ final class AppModel: ObservableObject {
     }
 
     func refresh() async {
+        await syncNotion()
         let status = provider.authorizationStatus
         guard status == .fullAccess else {
             hasCalendarAccess = false
@@ -187,11 +221,18 @@ final class AppModel: ObservableObject {
     }
 
     func dismissOverlay() {
-        skipActiveBatch()
+        if !activeNotionTasks.isEmpty { dismissActiveNotionBatch() }
+        else { skipActiveBatch() }
     }
 
     func snoozeActiveBatch(for minutes: Int) {
-        guard [5, 10, 15].contains(minutes), !activeEvents.isEmpty else { return }
+        guard [5, 10, 15].contains(minutes) else { return }
+        if !activeNotionTasks.isEmpty {
+            notionSnoozes.append((Set(activeNotionTasks.map(\.id)), .now.addingTimeInterval(TimeInterval(minutes * 60))))
+            finishActiveNotionBatch()
+            return
+        }
+        guard !activeEvents.isEmpty else { return }
         snoozedBatches.append(SnoozedBatch(
             id: UUID().uuidString,
             events: activeEvents,
@@ -208,6 +249,70 @@ final class AppModel: ObservableObject {
         }
         history.markHandled(activeEvents)
         finishActiveBatch()
+    }
+
+    func setNotionToken(_ token: String) throws {
+        try notionProvider.saveToken(token)
+        notionToken = notionProvider.loadToken()
+        Task { await syncNotion(force: true) }
+    }
+
+    private func scheduleNotionSync() {
+        notionSyncTask?.cancel()
+        notionSyncTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            await self?.syncNotion(force: true)
+        }
+    }
+
+    func refreshNotionSchema() async {
+        do {
+            notionSchemas = try await notionProvider.fetchSchema(configuration: notionConfiguration)
+            notionPropertyNames = try await notionProvider.fetchPropertyNames(configuration: notionConfiguration)
+            notionStatus = "Notionのスキーマを取得しました"
+        } catch { notionStatus = error.localizedDescription }
+    }
+
+    func syncNotion(force: Bool = false) async {
+        guard !notionToken.isEmpty else { notionStatus = "Notion未設定"; return }
+        if !force, let lastNotionAttempt, Date.now.timeIntervalSince(lastNotionAttempt) < 60 { return }
+        lastNotionAttempt = .now
+        do {
+            notionTasks = try await notionProvider.fetchTasks(configuration: notionConfiguration)
+            notionStatus = "Notionと同期済み（\(notionTasks.count)件）"
+            await tickNotion()
+        } catch {
+            notionStatus = error.localizedDescription
+        }
+    }
+
+    func addNotionTask(title: String, dueAt: Date?, isDateOnly: Bool) async throws {
+        try await notionProvider.createTask(title: title, dueAt: dueAt, isDateOnly: isDateOnly, configuration: notionConfiguration)
+        notionStatus = "Notionにタスクを追加しました"
+        await syncNotion(force: true)
+    }
+
+    func openNotionTask(_ task: NotionTask) { NSWorkspace.shared.open(task.url) }
+
+    func completeNotionTask(_ id: String) {
+        guard let task = notionTasks.first(where: { $0.id == id }) else { return }
+        Task {
+            do {
+                try await notionProvider.markComplete(pageID: id, configuration: notionConfiguration)
+                notionActionError = nil
+                notionTasks.removeAll { $0.id == id }
+                activeNotionTasks.removeAll { $0.id == id }
+                if activeNotionTasks.isEmpty { overlayManager.dismiss(); showNextNotification() }
+                else { presentNotion(activeNotionTasks) }
+                _ = task
+                await syncNotion()
+            } catch {
+                notionActionError = "完了にできませんでした: \(error.localizedDescription)"
+                notionStatus = notionActionError ?? "完了にできませんでした"
+                presentNotion(activeNotionTasks)
+            }
+        }
     }
 
     func openSettings() {
@@ -287,9 +392,65 @@ final class AppModel: ObservableObject {
         enqueue(grouped.map { PendingNotificationBatch(events: $0, snoozeID: nil) })
     }
 
+    private func tickNotion() async {
+        let now = Date.now
+        if activeEvents.isEmpty, activeNotionTasks.isEmpty,
+           let index = notionSnoozes.indices.filter({ notionSnoozes[$0].fireAt <= now }).min(by: { notionSnoozes[$0].fireAt < notionSnoozes[$1].fireAt }) {
+            let snooze = notionSnoozes.remove(at: index)
+            let tasks = notionTasks.filter { snooze.ids.contains($0.id) }
+            if !tasks.isEmpty { presentNotion(tasks); return }
+        }
+        let due = notionTasks.filter { task in
+            guard task.hasTimedDueDate, let dueAt = task.dueAt, dueAt <= now,
+                  !handledNotionIDs.contains(task.id) else { return false }
+            return true
+        }
+        guard activeEvents.isEmpty, activeNotionTasks.isEmpty,
+              let earliestDate = due.compactMap(\.dueAt).min() else { return }
+        let tasks = due.filter { $0.dueAt == earliestDate }
+        handledNotionIDs.formUnion(tasks.map(\.id))
+        persistHandledNotionIDs()
+        notionActionError = nil
+        presentNotion(tasks)
+    }
+
+    private func presentNotion(_ tasks: [NotionTask]) {
+        guard !tasks.isEmpty else { return }
+        activeEvents = []
+        activeNotionTasks = tasks.sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+        overlayManager.show(events: [], notionTasks: activeNotionTasks, notionError: notionActionError, displayMode: overlayDisplayMode,
+                            onOpenURL: { url in NSWorkspace.shared.open(url) },
+                            onSnooze: { [weak self] minutes in self?.snoozeActiveBatch(for: minutes) },
+                            onSkip: { [weak self] in self?.dismissActiveNotionBatch() },
+                            onCompleteNotionTask: { [weak self] id in self?.completeNotionTask(id) })
+    }
+
+    private func dismissActiveNotionBatch() {
+        handledNotionIDs.formUnion(activeNotionTasks.map(\.id))
+        persistHandledNotionIDs()
+        notionActionError = nil
+        finishActiveNotionBatch()
+    }
+
+    private func finishActiveNotionBatch() {
+        overlayManager.dismiss()
+        activeNotionTasks = []
+        showNextNotification()
+        Task { await tickNotion() }
+    }
+
+    private func showNextNotification() {
+        if !queuedBatches.isEmpty { presentNext(queuedBatches.removeFirst()) }
+        else if !activeNotionTasks.isEmpty { presentNotion(activeNotionTasks) }
+    }
+
+    private func persistHandledNotionIDs() {
+        UserDefaults.standard.set(Array(handledNotionIDs), forKey: Self.notionHandledKey)
+    }
+
     private func enqueue(_ batches: [PendingNotificationBatch]) {
         guard !batches.isEmpty else { return }
-        if activeEvents.isEmpty, queuedBatches.isEmpty {
+        if activeEvents.isEmpty, activeNotionTasks.isEmpty, queuedBatches.isEmpty {
             var remaining = batches
             presentNext(remaining.removeFirst())
             appendToQueue(remaining)
@@ -325,6 +486,7 @@ final class AppModel: ObservableObject {
     }
 
     private func present(_ events: [CalendarEvent]) {
+        activeNotionTasks = []
         activeEvents = events
         overlayManager.show(
             events: events,
@@ -337,16 +499,15 @@ final class AppModel: ObservableObject {
             },
             onSkip: { [weak self] in
                 self?.skipActiveBatch()
-            }
+            },
+            onCompleteNotionTask: { [weak self] id in self?.completeNotionTask(id) }
         )
     }
 
     private func finishActiveBatch() {
         overlayManager.dismiss()
         activeEvents = []
-        if !queuedBatches.isEmpty {
-            presentNext(queuedBatches.removeFirst())
-        }
+        showNextNotification()
     }
 
     private func reconcileSnoozedBatches(with currentEvents: [CalendarEvent], now: Date) {

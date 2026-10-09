@@ -2,16 +2,92 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var model: AppModel
+    @State private var tokenDraft = ""
+    @State private var tokenMessage: String?
 
     var body: some View {
         TabView {
             calendarSettings
                 .tabItem { Label("カレンダー", systemImage: "calendar") }
+            notionSettings
+                .tabItem { Label("Notion", systemImage: "checklist") }
             generalSettings
                 .tabItem { Label("一般", systemImage: "gearshape") }
         }
         .frame(width: 520, height: 430)
         .padding()
+    }
+
+    private var notionSettings: some View {
+        Form {
+            Section("Notion接続") {
+                SecureField("Integration Token", text: $tokenDraft)
+                HStack {
+                    Button("Tokenを保存") {
+                        do { try model.setNotionToken(tokenDraft); tokenDraft = ""; tokenMessage = "Keychainに保存しました" }
+                        catch { tokenMessage = error.localizedDescription }
+                    }
+                    Button("Tokenを削除") {
+                        do { try model.setNotionToken(""); tokenDraft = ""; tokenMessage = "Tokenを削除しました" }
+                        catch { tokenMessage = error.localizedDescription }
+                    }
+                    Text(model.notionToken.isEmpty ? "未設定" : "保存済み").font(.caption).foregroundStyle(.secondary)
+                }
+                if let tokenMessage { Text(tokenMessage).font(.caption).foregroundStyle(.secondary) }
+                TextField("Data Source ID", text: binding(\.dataSourceID))
+                Text("データベースをTimeBlockerに共有してください。タスクの追加にはIntegrationのInsert content権限も必要です。")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Data Sourceのスキーマを取得") { Task { await model.refreshNotionSchema() } }
+                    .disabled(model.notionToken.isEmpty || model.notionConfiguration.dataSourceID.isEmpty)
+            }
+
+            Section("タスクのプロパティ") {
+                if !model.notionPropertyNames.isEmpty {
+                    Picker("タイトルプロパティ", selection: binding(\.titleProperty)) {
+                        ForEach(model.notionPropertyNames, id: \.self) { name in Text(name).tag(name) }
+                    }
+                    Picker("期限プロパティ", selection: binding(\.dueDateProperty)) {
+                        ForEach(model.notionPropertyNames, id: \.self) { name in Text(name).tag(name) }
+                    }
+                    Picker("完了列", selection: binding(\.completionProperty)) {
+                        Text("選択してください").tag("")
+                        ForEach(model.notionSchemas.filter { $0.kind == model.notionConfiguration.completionKind }) { schema in Text(schema.name).tag(schema.name) }
+                    }
+                    Picker("完了列の種類", selection: binding(\.completionKind)) {
+                        ForEach(NotionPropertyKind.allCases) { kind in Text(kind.title).tag(kind) }
+                    }
+                    if model.notionConfiguration.completionKind != .checkbox {
+                        Picker("完了を表す値", selection: binding(\.completionValue)) {
+                            Text("選択してください").tag("")
+                            ForEach(selectedCompletionSchema?.options ?? []) { option in Text(option.name).tag(option.name) }
+                        }
+                    }
+                } else {
+                    TextField("完了プロパティ名", text: binding(\.completionProperty))
+                    Picker("完了列の種類", selection: binding(\.completionKind)) {
+                        ForEach(NotionPropertyKind.allCases) { kind in Text(kind.title).tag(kind) }
+                    }
+                    if model.notionConfiguration.completionKind != .checkbox {
+                        TextField("完了を表す値", text: binding(\.completionValue))
+                    }
+                }
+                Text(model.notionStatus).font(.caption).foregroundStyle(.secondary)
+                Text("起動時・設定変更時・スリープ復帰時と、起動中は60秒ごとに自動同期します。")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("今すぐ同期") { Task { await model.syncNotion(force: true) } }
+                    .disabled(model.notionToken.isEmpty)
+            }
+        }
+        .padding(.top, 14)
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
+
+    private var selectedCompletionSchema: NotionPropertySchema? {
+        model.notionSchemas.first { $0.name == model.notionConfiguration.completionProperty }
+    }
+
+    private func binding<Value>(_ keyPath: WritableKeyPath<NotionConfiguration, Value>) -> Binding<Value> {
+        Binding(get: { model.notionConfiguration[keyPath: keyPath] }, set: { model.notionConfiguration[keyPath: keyPath] = $0 })
     }
 
     private var calendarSettings: some View {

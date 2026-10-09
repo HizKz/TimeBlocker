@@ -26,10 +26,13 @@ final class OverlayManager {
 
     func show(
         events: [CalendarEvent],
+        notionTasks: [NotionTask] = [],
+        notionError: String? = nil,
         displayMode: OverlayDisplayMode,
         onOpenURL: @escaping (URL) -> Void,
         onSnooze: @escaping (Int) -> Void,
-        onSkip: @escaping () -> Void
+        onSkip: @escaping () -> Void,
+        onCompleteNotionTask: @escaping (String) -> Void = { _ in }
     ) {
         dismiss()
         let screens: [NSScreen]
@@ -58,9 +61,12 @@ final class OverlayManager {
             panel.isReleasedWhenClosed = false
             panel.contentView = NSHostingView(rootView: OverlayView(
                 events: events,
+                notionTasks: notionTasks,
+                notionError: notionError,
                 onOpenURL: onOpenURL,
                 onSnooze: onSnooze,
-                onSkip: onSkip
+                onSkip: onSkip,
+                onCompleteNotionTask: onCompleteNotionTask
             ))
             panels.append(panel)
             panel.orderFrontRegardless()
