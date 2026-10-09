@@ -16,6 +16,8 @@ struct MenuBarStatusLabel: View {
             ?? model.notionTasks.first
     }
 
+    private let countdownWindow: TimeInterval = 6 * 60 * 60
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 30)) { timeline in
             let title = statusTitle(at: timeline.date)
@@ -23,6 +25,7 @@ struct MenuBarStatusLabel: View {
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .monospacedDigit()
                 .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .accessibilityLabel(title)
         }
     }
@@ -31,23 +34,31 @@ struct MenuBarStatusLabel: View {
         let eventSummary: String
         if let event = model.nextEvent {
             let secondsUntil = event.startAt.timeIntervalSince(date)
-            let minutesUntil = max(1, Int(ceil(secondsUntil / 60)))
-            let countdown: String
-            if secondsUntil < 60 {
-                countdown = "まもなく"
-            } else if minutesUntil < 60 {
-                countdown = "あと\(minutesUntil)分"
+            let eventTime: String
+            if secondsUntil <= countdownWindow {
+                let minutesUntil = max(1, Int(ceil(secondsUntil / 60)))
+                if secondsUntil < 60 {
+                    eventTime = "まもなく"
+                } else if minutesUntil < 60 {
+                    eventTime = "あと\(minutesUntil)分"
+                } else {
+                    let hours = minutesUntil / 60
+                    let minutes = minutesUntil % 60
+                    eventTime = minutes == 0 ? "あと\(hours)時間" : "あと\(hours)時間\(minutes)分"
+                }
             } else {
-                let hours = minutesUntil / 60
-                let minutes = minutesUntil % 60
-                countdown = minutes == 0 ? "あと\(hours)時間" : "あと\(hours)時間\(minutes)分"
+                let day = Calendar.current.isDateInToday(event.startAt) ? "" : "明日 "
+                eventTime = day + event.startAt.formatted(date: .omitted, time: .shortened)
             }
             let title = String(event.title.prefix(13))
-            eventSummary = "\(countdown) \(title)"
+            eventSummary = "\(eventTime) \(title)"
         } else {
             eventSummary = model.hasCalendarAccess ? "予定なし" : "カレンダー未接続"
         }
 
+        if model.nextEvent != nil {
+            return eventSummary
+        }
         guard let task = taskForStatus else {
             if !model.notionToken.isEmpty,
                !model.notionStatus.hasPrefix("Notionと同期済み"),
@@ -93,6 +104,18 @@ struct MenuBarView: View {
     private var otherNotionTasks: [NotionTask] {
         let todayTaskIDs = Set(todayNotionTasks.map(\.id))
         return model.notionTasks.filter { !todayTaskIDs.contains($0.id) }
+    }
+
+    private var scheduleScrollHeight: CGFloat {
+        guard model.nextEvent != nil || !todayEvents.isEmpty else { return 82 }
+        let eventListHeight = todayEvents.isEmpty ? 0 : CGFloat(28 + todayEvents.count * 50)
+        return min(320, 92 + eventListHeight)
+    }
+
+    private var notionScrollHeight: CGFloat {
+        guard !model.notionTasks.isEmpty else { return 82 }
+        let sectionHeight = todayNotionTasks.isEmpty || otherNotionTasks.isEmpty ? 0 : 28
+        return min(320, CGFloat(model.notionTasks.count * 64 + sectionHeight))
     }
 
     var body: some View {
@@ -230,11 +253,10 @@ struct MenuBarView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 1)
             }
-            .frame(maxHeight: .infinity)
+            .frame(height: scheduleScrollHeight)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: 370, alignment: .top)
         .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
@@ -291,11 +313,10 @@ struct MenuBarView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 1)
             }
-            .frame(maxHeight: .infinity)
+            .frame(height: notionScrollHeight)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: 370, alignment: .top)
         .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
