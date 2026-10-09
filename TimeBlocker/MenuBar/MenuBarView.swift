@@ -82,50 +82,34 @@ struct MenuBarView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 13) {
-            HStack(spacing: 11) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 13, style: .continuous)
-                        .fill(LinearGradient(colors: [.orange.opacity(0.85), .pink.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(width: 42, height: 42)
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 19, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "calendar")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(Color.accentColor)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("今日の作戦")
-                        .font(.system(.title3, design: .rounded, weight: .bold))
-                    Text(Date.now.formatted(date: .complete, time: .omitted) + " · いい一日にしよっ♪")
+                    Text("TimeBlocker")
+                        .font(.headline)
+                    Text(Date.now.formatted(date: .complete, time: .omitted))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Image(systemName: "sun.max.fill")
-                    .font(.system(size: 21))
-                    .foregroundStyle(.yellow)
-                    .padding(.trailing, 4)
                 Button {
-                    withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                    withAnimation(.easeInOut(duration: 0.18)) {
                         isAddingEvent.toggle()
                     }
                 } label: {
                     Label(isAddingEvent ? "閉じる" : "予定を追加", systemImage: isAddingEvent ? "xmark" : "plus")
-                        .font(.system(.callout, design: .rounded, weight: .semibold))
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(isAddingEvent ? .gray : .orange)
-                .controlSize(.regular)
-            }
-            .padding(13)
-            .background {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(LinearGradient(colors: [Color.orange.opacity(0.10), Color.pink.opacity(0.07), Color.purple.opacity(0.06)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .controlSize(.small)
             }
 
             if isAddingEvent {
                 QuickAddEventForm(model: model, isPresented: $isAddingEvent)
-                    .padding(13)
-                    .background(Color.orange.opacity(0.07), in: RoundedRectangle(cornerRadius: 15, style: .continuous))
+                    .padding(12)
+                    .background(.quaternary.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -159,7 +143,7 @@ struct MenuBarView: View {
                 Text("予定")
                     .font(.system(.headline, design: .rounded, weight: .bold))
                 Spacer()
-                countBadge(todayEvents.count, tint: .orange)
+                countBadge(todayEvents.count)
             }
 
             ScrollView {
@@ -167,21 +151,20 @@ struct MenuBarView: View {
                     if let event = model.nextEvent {
                         VStack(alignment: .leading, spacing: 7) {
                             HStack {
-                                Label("NEXT UP", systemImage: "sparkle")
-                                    .font(.system(size: 9, weight: .heavy, design: .rounded))
-                                    .tracking(0.7)
-                                    .foregroundStyle(.orange)
+                                Text("次の予定")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                                 Spacer()
                                 TimelineView(.periodic(from: .now, by: 1)) { timeline in
                                     let remaining = max(0, Int(event.startAt.timeIntervalSince(timeline.date)))
                                     Text(remaining < 60 ? "まもなく！" : "あと \(remaining / 3600)時間 \((remaining % 3600) / 60)分")
-                                        .font(.system(.caption2, design: .rounded, weight: .semibold))
+                                        .font(.caption2)
                                         .monospacedDigit()
                                         .foregroundStyle(.secondary)
                                 }
                             }
                             Text(event.title)
-                                .font(.system(.headline, design: .rounded, weight: .semibold))
+                                .font(.headline)
                                 .lineLimit(2)
                             Label(event.timeRange, systemImage: "clock")
                                 .font(.caption.monospacedDigit())
@@ -189,12 +172,12 @@ struct MenuBarView: View {
                         }
                         .padding(11)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.background.opacity(0.82), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                        .background(.background, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .overlay(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 2).fill(Color(calendarHex: event.calendarColorHex)).frame(width: 4).padding(.vertical, 9)
                         }
                     } else {
-                        emptyState(icon: "cup.and.saucer.fill", title: model.hasCalendarAccess ? "今日は余白たっぷり" : "カレンダーをつなごう", subtitle: model.hasCalendarAccess ? "新しい予定を入れてみる？" : model.permissionMessage, tint: .orange)
+                        emptyState(icon: "calendar", title: model.hasCalendarAccess ? "今日の予定はありません" : "カレンダーに接続されていません", subtitle: model.hasCalendarAccess ? "予定を追加できます" : model.permissionMessage)
                         if !model.hasCalendarAccess {
                             Button("アクセスを許可") { Task { await model.requestCalendarAccess() } }
                                 .buttonStyle(.link)
@@ -203,9 +186,8 @@ struct MenuBarView: View {
                     }
 
                     if !todayEvents.isEmpty {
-                        Text("TODAY'S LINEUP")
-                            .font(.system(size: 9, weight: .heavy, design: .rounded))
-                            .tracking(0.8)
+                        Text("今日の予定")
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                             .padding(.top, 2)
                         ForEach(todayEvents) { event in
@@ -215,7 +197,7 @@ struct MenuBarView: View {
                                     .frame(width: 4, height: 28)
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(event.timeRange.components(separatedBy: " – ").first ?? "")
-                                        .font(.system(.caption2, design: .rounded, weight: .semibold).monospacedDigit())
+                                        .font(.caption2.monospacedDigit())
                                         .foregroundStyle(.secondary)
                                     Text(event.title).font(.caption).lineLimit(1)
                                 }
@@ -224,7 +206,7 @@ struct MenuBarView: View {
                             }
                             .padding(.horizontal, 8)
                             .padding(.vertical, 5)
-                            .background(.background.opacity(0.6), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                            .background(.background.opacity(0.7), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
                     }
                 }
@@ -235,22 +217,21 @@ struct MenuBarView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.orange.opacity(0.075), in: RoundedRectangle(cornerRadius: 17, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 17, style: .continuous).stroke(Color.orange.opacity(0.12), lineWidth: 1))
+        .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var notionPanel: some View {
         VStack(alignment: .leading, spacing: 9) {
             HStack(spacing: 7) {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(.mint)
-                Text("今日のタスク").font(.system(.headline, design: .rounded, weight: .bold))
+                Image(systemName: "checkmark.circle").foregroundStyle(Color.accentColor)
+                Text("今日のタスク").font(.headline)
                 Spacer()
-                countBadge(todayNotionTasks.count, tint: .mint)
-                Button { withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) { isAddingNotionTask.toggle() } } label: {
+                countBadge(todayNotionTasks.count)
+                Button { withAnimation(.easeInOut(duration: 0.18)) { isAddingNotionTask.toggle() } } label: {
                     Image(systemName: isAddingNotionTask ? "xmark" : "plus")
                         .font(.system(size: 11, weight: .bold))
                         .frame(width: 24, height: 24)
-                        .background(Color.mint.opacity(0.14), in: Circle())
+                        .background(.quaternary.opacity(0.65), in: Circle())
                 }
                 .buttonStyle(.plain).help("Notionタスクを追加")
                 Button { Task { await model.syncNotion(force: true) } } label: {
@@ -268,13 +249,13 @@ struct MenuBarView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
             HStack(spacing: 5) {
-                Circle().fill(model.notionStatus.hasPrefix("Notionと同期済み") ? Color.mint : Color.orange).frame(width: 6, height: 6)
-                Text(model.notionStatus).font(.system(.caption2, design: .rounded)).foregroundStyle(.secondary).lineLimit(1)
+                Circle().fill(model.notionStatus.hasPrefix("Notionと同期済み") ? Color.accentColor : Color.secondary).frame(width: 6, height: 6)
+                Text(model.notionStatus).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
             }
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 7) {
                     if todayNotionTasks.isEmpty {
-                        emptyState(icon: "checkmark.seal.fill", title: model.notionTasks.isEmpty ? "ミッション待ち！" : "今日の期限はなし", subtitle: model.notionTasks.isEmpty ? emptyNotionMessage : "ほかのタスクは下にあるよ", tint: .mint)
+                        emptyState(icon: "checkmark.circle", title: model.notionTasks.isEmpty ? "タスクはありません" : "今日が期限のタスクはありません", subtitle: model.notionTasks.isEmpty ? emptyNotionMessage : "ほかのタスクは下に表示されます")
                     } else {
                         ForEach(todayNotionTasks) { task in NotionTaskRow(task: task, model: model) }
                     }
@@ -283,7 +264,7 @@ struct MenuBarView: View {
                             Text("ほかのタスク")
                             Capsule().fill(.quaternary).frame(height: 1)
                         }
-                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .font(.caption2)
                         .foregroundStyle(.secondary)
                         .padding(.top, todayNotionTasks.isEmpty ? 0 : 5)
                         ForEach(otherNotionTasks) { task in NotionTaskRow(task: task, model: model) }
@@ -296,24 +277,23 @@ struct MenuBarView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.mint.opacity(0.075), in: RoundedRectangle(cornerRadius: 17, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 17, style: .continuous).stroke(Color.mint.opacity(0.14), lineWidth: 1))
+        .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
-    private func countBadge(_ count: Int, tint: Color) -> some View {
+    private func countBadge(_ count: Int) -> some View {
         Text("\(count)")
-            .font(.system(.caption2, design: .rounded, weight: .bold))
+            .font(.caption2.weight(.semibold))
             .monospacedDigit()
-            .foregroundStyle(tint)
+            .foregroundStyle(.secondary)
             .padding(.horizontal, 7)
             .padding(.vertical, 3)
-            .background(tint.opacity(0.13), in: Capsule())
+            .background(.quaternary.opacity(0.6), in: Capsule())
     }
 
-    private func emptyState(icon: String, title: String, subtitle: String, tint: Color) -> some View {
+    private func emptyState(icon: String, title: String, subtitle: String) -> some View {
         VStack(spacing: 6) {
-            Image(systemName: icon).font(.system(size: 24, weight: .medium)).foregroundStyle(tint.opacity(0.8))
-            Text(title).font(.system(.subheadline, design: .rounded, weight: .semibold))
+            Image(systemName: icon).font(.system(size: 20, weight: .regular)).foregroundStyle(.secondary)
+            Text(title).font(.subheadline.weight(.medium))
             Text(subtitle).font(.caption2).foregroundStyle(.secondary).multilineTextAlignment(.center).lineLimit(3)
         }
         .frame(maxWidth: .infinity)
