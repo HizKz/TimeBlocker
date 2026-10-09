@@ -17,19 +17,33 @@ struct MenuBarStatusLabel: View {
     }
 
     var body: some View {
-        Text(statusTitle)
-            .font(.system(size: 12, weight: .medium, design: .rounded))
-            .monospacedDigit()
-            .lineLimit(1)
-            .accessibilityLabel(statusTitle)
+        TimelineView(.periodic(from: .now, by: 30)) { timeline in
+            let title = statusTitle(at: timeline.date)
+            Text(title)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .monospacedDigit()
+                .lineLimit(1)
+                .accessibilityLabel(title)
+        }
     }
 
-    private var statusTitle: String {
+    private func statusTitle(at date: Date) -> String {
         let eventSummary: String
         if let event = model.nextEvent {
-            let time = event.startAt.formatted(date: .omitted, time: .shortened)
-            let title = String(event.title.prefix(16))
-            eventSummary = "\(time) \(title)"
+            let secondsUntil = event.startAt.timeIntervalSince(date)
+            let minutesUntil = max(1, Int(ceil(secondsUntil / 60)))
+            let countdown: String
+            if secondsUntil < 60 {
+                countdown = "まもなく"
+            } else if minutesUntil < 60 {
+                countdown = "あと\(minutesUntil)分"
+            } else {
+                let hours = minutesUntil / 60
+                let minutes = minutesUntil % 60
+                countdown = minutes == 0 ? "あと\(hours)時間" : "あと\(hours)時間\(minutes)分"
+            }
+            let title = String(event.title.prefix(13))
+            eventSummary = "\(countdown) \(title)"
         } else {
             eventSummary = model.hasCalendarAccess ? "予定なし" : "カレンダー未接続"
         }
