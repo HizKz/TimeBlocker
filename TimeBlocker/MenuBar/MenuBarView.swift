@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuBarStatusLabel: View {
     @ObservedObject var model: AppModel
+    @State private var currentDate = Date.now
 
     private var todayNotionTasks: [NotionTask] {
         model.notionTasks.filter { task in
@@ -19,15 +20,17 @@ struct MenuBarStatusLabel: View {
     private let countdownWindow: TimeInterval = 6 * 60 * 60
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 30)) { timeline in
-            let title = statusTitle(at: timeline.date)
-            Text(title)
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .monospacedDigit()
-                .lineLimit(1)
-                .fixedSize(horizontal: true, vertical: false)
-                .accessibilityLabel(title)
-        }
+        let title = statusTitle(at: currentDate)
+        Label(title, systemImage: "calendar")
+            .font(.system(size: 12, weight: .medium, design: .rounded))
+            .monospacedDigit()
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .labelStyle(.titleAndIcon)
+            .accessibilityLabel(title)
+            .onReceive(Timer.publish(every: 30, on: .main, in: .common).autoconnect()) { date in
+                currentDate = date
+            }
     }
 
     private func statusTitle(at date: Date) -> String {
@@ -56,9 +59,6 @@ struct MenuBarStatusLabel: View {
             eventSummary = model.hasCalendarAccess ? "予定なし" : "カレンダー未接続"
         }
 
-        if model.nextEvent != nil {
-            return eventSummary
-        }
         guard let task = taskForStatus else {
             if !model.notionToken.isEmpty,
                !model.notionStatus.hasPrefix("Notionと同期済み"),
