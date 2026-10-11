@@ -22,3 +22,7 @@ Open `TimeBlocker.xcodeproj` in Xcode and run the `TimeBlocker` scheme. On first
 - Supports configurable recovery notification grace periods after Mac wake or app launch.
 
 All calendar access and notification history remain local to the Mac. Notion integration and login-at-startup are not implemented yet.
+
+## License
+
+TimeBlocker is distributed under the MIT License. See [LICENSE](LICENSE) for details.
