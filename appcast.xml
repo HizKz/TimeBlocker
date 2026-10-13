@@ -14,18 +14,7 @@
 ]]></description>
             <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.6/TimeBlocker-1.0.6.zip" length="4075099" type="application/octet-stream" sparkle:edSignature="h6Ss/+FZGgVHItX/+9T0hs4v9vvhWoQBgjMmZj5M/E70iJPsFyiuXFe9j6gebnH9Jz7KlSZFl1g4ljBxshJyDg=="/>
         </item>
-        <item>
-            <title>1.0.6</title>
-            <pubDate>Tue, 13 Oct 2026 17:56:28 +0900</pubDate>
-            <sparkle:version>7</sparkle:version>
-            <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.6
 
-- 今日の予定一覧から、書き込み可能なカレンダーの予定を確認のうえ削除できるようになりました。
-]]></description>
-            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.6/TimeBlocker-1.0.6.zip" length="4075023" type="application/octet-stream" sparkle:edSignature="IPO/eLZW32ySFQVEUo+j/zL7iIoPHtdQpIIQIjoFbhvKdrbM1DCt9Q3xM/OvHkNZWiuIj9KOQRG7Guu0QUR/BA=="/>
-        </item>
         <item>
             <title>1.0.5</title>
             <pubDate>Tue, 13 Oct 2026 17:50:15 +0900</pubDate>
