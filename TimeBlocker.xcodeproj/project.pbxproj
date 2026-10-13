@@ -21,6 +21,7 @@
 		A0000000000000000000000D /* CalendarColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000D /* CalendarColor.swift */; };
 		A0000000000000000000000E /* NotionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000E /* NotionTask.swift */; };
 		A0000000000000000000000F /* NotionTaskProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000F /* NotionTaskProvider.swift */; };
+		A00000000000000000000010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000010 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		B0000000000000000000000D /* CalendarColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarColor.swift; sourceTree = "<group>"; };
 		B0000000000000000000000E /* NotionTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTask.swift; sourceTree = "<group>"; };
 		B0000000000000000000000F /* NotionTaskProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTaskProvider.swift; sourceTree = "<group>"; };
+		B00000000000000000000010 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C00000000000000000000001 /* TimeBlocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeBlocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -48,7 +50,7 @@
 
 /* Begin PBXGroup section */
 		E00000000000000000000001 = {isa = PBXGroup; children = (E00000000000000000000002 /* TimeBlocker */, E00000000000000000000003 /* Products */, ); sourceTree = "<group>"; };
-		E00000000000000000000002 /* TimeBlocker */ = {isa = PBXGroup; path = TimeBlocker; sourceTree = "<group>"; children = (E00000000000000000000004 /* App */, E00000000000000000000005 /* Domain */, E00000000000000000000006 /* Providers */, E00000000000000000000007 /* Overlay */, E00000000000000000000008 /* MenuBar */, E00000000000000000000009 /* Settings */, E0000000000000000000000A /* Storage */, E0000000000000000000000B /* Utilities */, ); };
+		E00000000000000000000002 /* TimeBlocker */ = {isa = PBXGroup; path = TimeBlocker; sourceTree = "<group>"; children = (E00000000000000000000004 /* App */, E00000000000000000000005 /* Domain */, E00000000000000000000006 /* Providers */, E00000000000000000000007 /* Overlay */, E00000000000000000000008 /* MenuBar */, E00000000000000000000009 /* Settings */, E0000000000000000000000A /* Storage */, E0000000000000000000000B /* Utilities */, B00000000000000000000010 /* Assets.xcassets */, ); };
 		E00000000000000000000003 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (C00000000000000000000001 /* TimeBlocker.app */, ); };
 		E00000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B00000000000000000000001 /* TimeBlockerApp.swift */, B00000000000000000000002 /* AppDelegate.swift */, B00000000000000000000003 /* AppModel.swift */, ); };
 		E00000000000000000000005 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B00000000000000000000004 /* CalendarEvent.swift */, B0000000000000000000000C /* EventLinkResolver.swift */, B0000000000000000000000E /* NotionTask.swift */, ); };
@@ -69,7 +71,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F00000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		F00000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000010 /* Assets.xcassets in Resources */, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -79,8 +81,8 @@
 /* Begin XCBuildConfiguration section */
 		200000000000000000000001 /* Debug project */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SDKROOT = macosx; SWIFT_VERSION = 5.0; }; name = Debug; };
 		200000000000000000000002 /* Release project */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; SDKROOT = macosx; SWIFT_VERSION = 5.0; }; name = Release; };
-		200000000000000000000003 /* Debug target */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
-		200000000000000000000004 /* Release target */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
+		200000000000000000000003 /* Debug target */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
+		200000000000000000000004 /* Release target */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
