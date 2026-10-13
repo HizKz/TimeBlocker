@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct MenuBarStatusLabel: View {
@@ -86,6 +87,7 @@ struct MenuBarStatusLabel: View {
 struct MenuBarView: View {
     @ObservedObject var model: AppModel
     @ObservedObject var updateManager: UpdateManager
+    @Environment(\.openSettings) private var openSettings
     @State private var isAddingEvent = false
     @State private var isAddingNotionTask = false
     @State private var eventSearch = ""
@@ -151,8 +153,12 @@ struct MenuBarView: View {
             }
 
             HStack(spacing: 9) {
-                SettingsLink { Label("設定", systemImage: "gearshape") }
-                    .buttonStyle(.borderless)
+                Button {
+                    openSettingsWindow()
+                } label: {
+                    Label("設定", systemImage: "gearshape")
+                }
+                .buttonStyle(.borderless)
                 Button { updateManager.checkForUpdates() } label: { Label("アップデート", systemImage: "arrow.triangle.2.circlepath") }
                     .buttonStyle(.borderless)
                 Spacer()
@@ -167,6 +173,14 @@ struct MenuBarView: View {
         }
         .padding(14)
         .frame(width: 720, alignment: .leading)
+    }
+
+    private func openSettingsWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        openSettings()
+        DispatchQueue.main.async {
+            NSApp.activate(ignoringOtherApps: true)
+        }
     }
 
     private var schedulePanel: some View {

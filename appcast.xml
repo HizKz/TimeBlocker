@@ -3,6 +3,18 @@
     <channel>
         <title>TimeBlocker</title>
         <item>
+            <title>1.0.7</title>
+            <pubDate>Tue, 13 Oct 2026 18:03:34 +0900</pubDate>
+            <sparkle:version>8</sparkle:version>
+            <sparkle:shortVersionString>1.0.7</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.7
+
+- 設定を開くときにTimeBlockerを前面化するようにし、設定画面が背面に回る問題を修正しました。
+]]></description>
+            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.7/TimeBlocker-1.0.7.zip" length="4081380" type="application/octet-stream" sparkle:edSignature="uRtJgLGBscqsJF0wq6mfpSboMU7um4RteqB7L60icvX1x6Qcwgmz6tNbVuK7vCO9cwpaMPRAFfQ3UuRnHiiaAA=="/>
+        </item>
+        <item>
             <title>1.0.6</title>
             <pubDate>Tue, 13 Oct 2026 17:56:28 +0900</pubDate>
             <sparkle:version>7</sparkle:version>

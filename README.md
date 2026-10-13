@@ -86,7 +86,7 @@ v1.0.3からSparkleで更新を確認します。メニューバーまたは「�
 更新フィードは`appcast.xml`としてGitHubの`main`ブランチから配信します。次のリリースを作るときは、`CFBundleShortVersionString`と`CFBundleVersion`を増やし、アプリをビルドしてからEdDSA署名付き更新アーカイブを登録したフィードを生成します。同名の`TimeBlocker-${VERSION}.md`を`dist/updates`へ置くと、更新画面にリリースノートを表示できます。
 
 ```sh
-VERSION="1.0.6"
+VERSION="1.0.7"
 mkdir -p dist/updates
 ditto -c -k --sequesterRsrc --keepParent \
   dist/TimeBlocker.xcarchive/Products/Applications/TimeBlocker.app \
