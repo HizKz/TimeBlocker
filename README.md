@@ -8,6 +8,7 @@ TimeBlockerは、macOSのメニューバーからカレンダーの予定とNoti
 
 - 通知対象にするカレンダーを選べます。カレンダー名と色で見分けられます。
 - メニューバー上の表示欄には次の予定とタスクの概要を表示し、次の予定まで6時間以内ならカウントダウンします。TimeBlockerをクリックすると、今日の予定とタスクの一覧を確認できます。
+- 今日の予定は、予定名や場所で絞り込めます。
 - 予定の開始時刻になると、半透明の全画面パネルで知らせます。同じ開始時刻の予定は一つのパネルにまとめます。
 - パネルから予定のURLや会議リンクを開けます。5分・10分・15分後へのスヌーズと、通知を閉じる操作があります。
 - アプリ起動時やMacのスリープ復帰時に、開始から設定した時間内の予定を通知します。通知の猶予時間は1分・3分・5分・10分・15分から選べます（初期値は5分）。
@@ -78,14 +79,16 @@ NOTARY_PROFILE="TimeBlocker-notary" \
 
 ## 自動アップデート
 
-v1.0.3からSparkleで更新を確認します。メニューバーまたは「設定」→「一般」から手動確認でき、自動確認も有効です。v1.0.2以前は起動できないため、v1.0.3を一度だけ手動でインストールしてください。
+v1.0.3からSparkleで更新を確認します。メニューバーまたは「設定」→「一般」から手動確認でき、自動確認も有効です。v1.0.2は起動できないため、まだv1.0.3へ入れ替えていない場合は一度手動でインストールしてください。
 
 更新フィードは`appcast.xml`としてGitHubの`main`ブランチから配信します。次のリリースを作るときは、`CFBundleShortVersionString`と`CFBundleVersion`を増やし、アプリをビルドしてからEdDSA署名付き更新アーカイブを登録したフィードを生成します。同名の`TimeBlocker-${VERSION}.md`を`dist/updates`へ置くと、更新画面にリリースノートを表示できます。
 
 ```sh
-VERSION="1.0.3"
+VERSION="1.0.4"
 mkdir -p dist/updates
-cp dist/TimeBlocker.dmg "dist/updates/TimeBlocker-${VERSION}.dmg"
+ditto -c -k --sequesterRsrc --keepParent \
+  dist/TimeBlocker.xcarchive/Products/Applications/TimeBlocker.app \
+  "dist/updates/TimeBlocker-${VERSION}.zip"
 dist/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast \
   --embed-release-notes \
   --download-url-prefix "https://github.com/HizKz/TimeBlocker/releases/download/v${VERSION}/" \
@@ -93,7 +96,7 @@ dist/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast \
 cp dist/updates/appcast.xml appcast.xml
 ```
 
-生成された`TimeBlocker-${VERSION}.dmg`を同じバージョンのGitHub Releaseへアップロードし、`appcast.xml`も`main`へpushしてください。更新用EdDSA秘密鍵はこのMacのログインキーチェーンに保存しています。秘密鍵はリポジトリやReleaseへ置かず、今後の署名に使えるようキーチェーンを保全してください。
+生成された`TimeBlocker-${VERSION}.zip`と`dist/TimeBlocker.dmg`を同じバージョンのGitHub Releaseへアップロードし、`appcast.xml`も`main`へpushしてください。過去バージョンのURLがそれぞれのGitHub Releaseを指していることも確認してください。更新用EdDSA秘密鍵はこのMacのログインキーチェーンに保存しています。秘密鍵はリポジトリやReleaseへ置かず、今後の署名に使えるようキーチェーンを保全してください。
 
 ## Notionとの接続
 

@@ -88,9 +88,19 @@ struct MenuBarView: View {
     @ObservedObject var updateManager: UpdateManager
     @State private var isAddingEvent = false
     @State private var isAddingNotionTask = false
+    @State private var eventSearch = ""
 
     private var todayEvents: [CalendarEvent] {
         model.upcomingEvents.filter { Calendar.current.isDateInToday($0.startAt) }
+    }
+
+    private var filteredTodayEvents: [CalendarEvent] {
+        let query = eventSearch.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return todayEvents }
+        return todayEvents.filter {
+            $0.title.localizedCaseInsensitiveContains(query)
+                || ($0.location?.localizedCaseInsensitiveContains(query) ?? false)
+        }
     }
 
     private var todayNotionTasks: [NotionTask] {
@@ -109,7 +119,7 @@ struct MenuBarView: View {
 
     private var scheduleScrollHeight: CGFloat {
         guard model.nextEvent != nil || !todayEvents.isEmpty else { return 82 }
-        let eventListHeight = todayEvents.isEmpty ? 0 : CGFloat(28 + todayEvents.count * 50)
+        let eventListHeight = todayEvents.isEmpty ? 0 : CGFloat(70 + todayEvents.count * 50)
         return min(320, 92 + eventListHeight)
     }
 
@@ -233,7 +243,38 @@ struct MenuBarView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .padding(.top, 2)
-                        ForEach(todayEvents) { event in
+                        HStack(spacing: 7) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            TextField("予定名や場所で検索", text: $eventSearch)
+                                .textFieldStyle(.plain)
+                                .font(.caption)
+                            if !eventSearch.isEmpty {
+                                Button {
+                                    eventSearch = ""
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.tertiary)
+                                }
+                                .buttonStyle(.plain)
+                                .help("検索をクリア")
+                            }
+                        }
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .background(.background.opacity(0.7), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                        if filteredTodayEvents.isEmpty {
+                            Text("一致する予定はありません")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 8)
+                        }
+                        ForEach(filteredTodayEvents) { event in
                             HStack(spacing: 8) {
                                 RoundedRectangle(cornerRadius: 2)
                                     .fill(Color(calendarHex: event.calendarColorHex))
