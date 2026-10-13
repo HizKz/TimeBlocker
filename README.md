@@ -60,6 +60,10 @@ DMGを開くと、TimeBlockerのアイコンとApplicationsフォルダを案内
 
 署名証明書を指定しない場合はアドホック署名で作成します。自分のMacでの確認用で、ほかのMacへ配布するとGatekeeperに止められる場合があります。一般向けに配布する場合はApple Developer ProgramのDeveloper ID Application証明書で署名し、公証してください。
 
+Developer ID署名と公証がない配布版を別のMacで初めて開くときは、macOSが起動を止めることがあります。TimeBlockerをApplicationsフォルダへドラッグし、Applications内のアプリを一度開いてください。ブロックされた場合は「システム設定」→「プライバシーとセキュリティ」→「セキュリティ」へ進み、「このまま開く」を選んで確認画面でも「開く」を押します。
+
+TimeBlockerはメニューバーアプリです。起動後もDockや通常のウィンドウには表示されず、画面上部のメニューバーにアイコンが表示されます。
+
 Developer ID証明書をキーチェーンに登録済みで、公証用の`notarytool`プロファイルも作成済みの場合は、次のように実行します。
 
 ```sh
