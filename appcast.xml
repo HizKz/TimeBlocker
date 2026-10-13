@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>TimeBlocker</title>
+        <item>
+            <title>1.0.2</title>
+            <pubDate>Tue, 13 Oct 2026 11:10:28 +0900</pubDate>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.2/TimeBlocker-1.0.2.dmg" length="4415564" type="application/octet-stream" sparkle:edSignature="1xRqZNzpZFpQQwOFo5XauBfstVJjQKiq/bfYAfg2E4DZ9vYAEc2UhpMZG4FBRk7uaJVGvNofhT8aKoqodPW3DQ=="/>
+            <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.2
+
+- Sparkleによる自動アップデート確認を追加しました。
+- メニューバーと設定から手動でアップデートを確認できます。
+]]></description>
+        </item>
+    </channel>
+</rss>

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var updateManager: UpdateManager
     @State private var tokenDraft = ""
     @State private var tokenMessage: String?
 
@@ -125,6 +126,13 @@ struct SettingsView: View {
 
     private var generalSettings: some View {
         Form {
+            Section("アップデート") {
+                Button("アップデートを確認") { updateManager.checkForUpdates() }
+                Text("TimeBlockerの新しいバージョンを確認します。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("通知") {
                 Picker("スリープ復帰後の通知期限", selection: $model.notificationGraceMinutes) {
                     ForEach([1, 3, 5, 10, 15], id: \.self) { minutes in

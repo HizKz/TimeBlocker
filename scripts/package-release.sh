@@ -18,6 +18,7 @@ xcodebuild \
   -configuration Release \
   -destination 'generic/platform=macOS' \
   -derivedDataPath "$OUTPUT_DIR/DerivedData" \
+  -clonedSourcePackagesDirPath "$OUTPUT_DIR/SourcePackages" \
   -archivePath "$ARCHIVE_PATH" \
   ARCHS='arm64 x86_64' \
   CODE_SIGN_STYLE=Manual \

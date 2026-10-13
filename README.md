@@ -68,6 +68,25 @@ NOTARY_PROFILE="TimeBlocker-notary" \
 
 `DEVELOPER_ID_APPLICATION`には`security find-identity -v -p codesigning`に表示される証明書名、`NOTARY_PROFILE`には`xcrun notarytool store-credentials`で登録したプロファイル名を指定します。
 
+## 自動アップデート
+
+v1.0.2からSparkleで更新を確認します。メニューバーまたは「設定」→「一般」から手動確認でき、自動確認も有効です。v1.0.1以前には更新機能がないため、v1.0.2を一度だけ手動でインストールしてください。
+
+更新フィードは`appcast.xml`としてGitHubの`main`ブランチから配信します。次のリリースを作るときは、`CFBundleShortVersionString`と`CFBundleVersion`を増やし、アプリをビルドしてからEdDSA署名付き更新アーカイブを登録したフィードを生成します。同名の`TimeBlocker-${VERSION}.md`を`dist/updates`へ置くと、更新画面にリリースノートを表示できます。
+
+```sh
+VERSION="1.0.3"
+mkdir -p dist/updates
+cp dist/TimeBlocker.dmg "dist/updates/TimeBlocker-${VERSION}.dmg"
+dist/SourcePackages/artifacts/sparkle/Sparkle/bin/generate_appcast \
+  --embed-release-notes \
+  --download-url-prefix "https://github.com/HizKz/TimeBlocker/releases/download/v${VERSION}/" \
+  dist/updates
+cp dist/updates/appcast.xml appcast.xml
+```
+
+生成された`TimeBlocker-${VERSION}.dmg`を同じバージョンのGitHub Releaseへアップロードし、`appcast.xml`も`main`へpushしてください。更新用EdDSA秘密鍵はこのMacのログインキーチェーンに保存しています。秘密鍵はリポジトリやReleaseへ置かず、今後の署名に使えるようキーチェーンを保全してください。
+
 ## Notionとの接続
 
 ### 1. Notion Integrationを用意する

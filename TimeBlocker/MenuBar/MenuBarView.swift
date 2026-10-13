@@ -85,6 +85,7 @@ struct MenuBarStatusLabel: View {
 
 struct MenuBarView: View {
     @ObservedObject var model: AppModel
+    @ObservedObject var updateManager: UpdateManager
     @State private var isAddingEvent = false
     @State private var isAddingNotionTask = false
 
@@ -141,6 +142,8 @@ struct MenuBarView: View {
 
             HStack(spacing: 9) {
                 SettingsLink { Label("設定", systemImage: "gearshape") }
+                    .buttonStyle(.borderless)
+                Button { updateManager.checkForUpdates() } label: { Label("アップデート", systemImage: "arrow.triangle.2.circlepath") }
                     .buttonStyle(.borderless)
                 Spacer()
                 Button { model.scheduleTestNotification() } label: { Label("通知テスト", systemImage: "bell.badge") }

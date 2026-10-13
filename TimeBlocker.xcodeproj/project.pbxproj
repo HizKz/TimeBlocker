@@ -21,6 +21,8 @@
 		A0000000000000000000000D /* CalendarColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000D /* CalendarColor.swift */; };
 		A0000000000000000000000E /* NotionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000E /* NotionTask.swift */; };
 		A0000000000000000000000F /* NotionTaskProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0000000000000000000000F /* NotionTaskProvider.swift */; };
+		A00000000000000000000011 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000011 /* UpdateManager.swift */; };
+		A00000000000000000000012 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F10000000000000000000001 /* Sparkle */; };
 		A00000000000000000000010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000010 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -41,18 +43,19 @@
 		B0000000000000000000000E /* NotionTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTask.swift; sourceTree = "<group>"; };
 		B0000000000000000000000F /* NotionTaskProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotionTaskProvider.swift; sourceTree = "<group>"; };
 		B00000000000000000000010 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B00000000000000000000011 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		C00000000000000000000001 /* TimeBlocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeBlocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		D00000000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		D00000000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000012 /* Sparkle in Frameworks */,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		E00000000000000000000001 = {isa = PBXGroup; children = (E00000000000000000000002 /* TimeBlocker */, E00000000000000000000003 /* Products */, ); sourceTree = "<group>"; };
 		E00000000000000000000002 /* TimeBlocker */ = {isa = PBXGroup; path = TimeBlocker; sourceTree = "<group>"; children = (E00000000000000000000004 /* App */, E00000000000000000000005 /* Domain */, E00000000000000000000006 /* Providers */, E00000000000000000000007 /* Overlay */, E00000000000000000000008 /* MenuBar */, E00000000000000000000009 /* Settings */, E0000000000000000000000A /* Storage */, E0000000000000000000000B /* Utilities */, B00000000000000000000010 /* Assets.xcassets */, ); };
 		E00000000000000000000003 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (C00000000000000000000001 /* TimeBlocker.app */, ); };
-		E00000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B00000000000000000000001 /* TimeBlockerApp.swift */, B00000000000000000000002 /* AppDelegate.swift */, B00000000000000000000003 /* AppModel.swift */, ); };
+		E00000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B00000000000000000000001 /* TimeBlockerApp.swift */, B00000000000000000000002 /* AppDelegate.swift */, B00000000000000000000003 /* AppModel.swift */, B00000000000000000000011 /* UpdateManager.swift */, ); };
 		E00000000000000000000005 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B00000000000000000000004 /* CalendarEvent.swift */, B0000000000000000000000C /* EventLinkResolver.swift */, B0000000000000000000000E /* NotionTask.swift */, ); };
 		E00000000000000000000006 /* Providers */ = {isa = PBXGroup; path = Providers; sourceTree = "<group>"; children = (B00000000000000000000005 /* EventProvider.swift */, B00000000000000000000006 /* EventKitProvider.swift */, B0000000000000000000000F /* NotionTaskProvider.swift */, ); };
 		E00000000000000000000007 /* Overlay */ = {isa = PBXGroup; path = Overlay; sourceTree = "<group>"; children = (B00000000000000000000008 /* OverlayManager.swift */, B00000000000000000000009 /* OverlayView.swift */, ); };
@@ -63,11 +66,11 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F00000000000000000000001 /* TimeBlocker */ = {isa = PBXNativeTarget; buildConfigurationList = F00000000000000000000004 /* Build configuration list for PBXNativeTarget "TimeBlocker" */; buildPhases = (F00000000000000000000002 /* Sources */, D00000000000000000000001 /* Frameworks */, F00000000000000000000003 /* Resources */, ); buildRules = (); dependencies = (); name = TimeBlocker; productName = TimeBlocker; productReference = C00000000000000000000001 /* TimeBlocker.app */; productType = "com.apple.product-type.application"; };
+		F00000000000000000000001 /* TimeBlocker */ = {isa = PBXNativeTarget; buildConfigurationList = F00000000000000000000004 /* Build configuration list for PBXNativeTarget "TimeBlocker" */; buildPhases = (F00000000000000000000002 /* Sources */, D00000000000000000000001 /* Frameworks */, F00000000000000000000003 /* Resources */, ); buildRules = (); dependencies = (); packageProductDependencies = (F10000000000000000000001 /* Sparkle */,); name = TimeBlocker; productName = TimeBlocker; productReference = C00000000000000000000001 /* TimeBlocker.app */; productType = "com.apple.product-type.application"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		100000000000000000000001 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastUpgradeCheck = 2630; TargetAttributes = {F00000000000000000000001 = {CreatedOnToolsVersion = 26.3; }; }; }; buildConfigurationList = 100000000000000000000002 /* Build configuration list for PBXProject "TimeBlocker" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base, ja, ); mainGroup = E00000000000000000000001; productRefGroup = E00000000000000000000003 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (F00000000000000000000001 /* TimeBlocker */, ); };
+		100000000000000000000001 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastUpgradeCheck = 2630; TargetAttributes = {F00000000000000000000001 = {CreatedOnToolsVersion = 26.3; }; }; }; buildConfigurationList = 100000000000000000000002 /* Build configuration list for PBXProject "TimeBlocker" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base, ja, ); mainGroup = E00000000000000000000001; packageReferences = (R10000000000000000000001 /* XCRemoteSwiftPackageReference Sparkle */,); productRefGroup = E00000000000000000000003 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (F00000000000000000000001 /* TimeBlocker */, ); };
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -75,7 +78,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* TimeBlockerApp.swift in Sources */, A00000000000000000000002 /* AppDelegate.swift in Sources */, A00000000000000000000003 /* AppModel.swift in Sources */, A00000000000000000000004 /* CalendarEvent.swift in Sources */, A00000000000000000000005 /* EventProvider.swift in Sources */, A00000000000000000000006 /* EventKitProvider.swift in Sources */, A00000000000000000000007 /* NotificationHistory.swift in Sources */, A00000000000000000000008 /* OverlayManager.swift in Sources */, A00000000000000000000009 /* OverlayView.swift in Sources */, A0000000000000000000000A /* MenuBarView.swift in Sources */, A0000000000000000000000B /* SettingsView.swift in Sources */, A0000000000000000000000C /* EventLinkResolver.swift in Sources */, A0000000000000000000000D /* CalendarColor.swift in Sources */, A0000000000000000000000E /* NotionTask.swift in Sources */, A0000000000000000000000F /* NotionTaskProvider.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		F00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A00000000000000000000001 /* TimeBlockerApp.swift in Sources */, A00000000000000000000002 /* AppDelegate.swift in Sources */, A00000000000000000000003 /* AppModel.swift in Sources */, A00000000000000000000004 /* CalendarEvent.swift in Sources */, A00000000000000000000005 /* EventProvider.swift in Sources */, A00000000000000000000006 /* EventKitProvider.swift in Sources */, A00000000000000000000007 /* NotificationHistory.swift in Sources */, A00000000000000000000008 /* OverlayManager.swift in Sources */, A00000000000000000000009 /* OverlayView.swift in Sources */, A0000000000000000000000A /* MenuBarView.swift in Sources */, A0000000000000000000000B /* SettingsView.swift in Sources */, A0000000000000000000000C /* EventLinkResolver.swift in Sources */, A0000000000000000000000D /* CalendarColor.swift in Sources */, A0000000000000000000000E /* NotionTask.swift in Sources */, A0000000000000000000000F /* NotionTaskProvider.swift in Sources */, A00000000000000000000011 /* UpdateManager.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -84,6 +87,14 @@
 		200000000000000000000003 /* Debug target */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
 		200000000000000000000004 /* Release target */ = {isa = XCBuildConfiguration; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_ENTITLEMENTS = TimeBlocker/TimeBlocker.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_APP_SANDBOX = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = TimeBlocker/Info.plist; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = com.hizumekazushi.TimeBlocker; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
 /* End XCBuildConfiguration section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		R10000000000000000000001 /* XCRemoteSwiftPackageReference Sparkle */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/sparkle-project/Sparkle"; requirement = {kind = upToNextMajorVersion; minimumVersion = 2.10.0; }; };
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F10000000000000000000001 /* Sparkle */ = {isa = XCSwiftPackageProductDependency; package = R10000000000000000000001 /* XCRemoteSwiftPackageReference Sparkle */; productName = Sparkle; };
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCConfigurationList section */
 		100000000000000000000002 /* Build configuration list for PBXProject "TimeBlocker" */ = {isa = XCConfigurationList; buildConfigurations = (200000000000000000000001 /* Debug project */, 200000000000000000000002 /* Release project */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
