@@ -9,8 +9,15 @@ APP_PATH="$ARCHIVE_PATH/Products/Applications/TimeBlocker.app"
 DMG_PATH="$OUTPUT_DIR/TimeBlocker.dmg"
 TEMP_DMG_PATH="$OUTPUT_DIR/TimeBlocker-rw.dmg"
 SIGNING_IDENTITY="${DEVELOPER_ID_APPLICATION:--}"
-
 mkdir -p "$OUTPUT_DIR"
+HARDENED_RUNTIME=YES
+ENTITLEMENTS_PATH="$ROOT_DIR/TimeBlocker/TimeBlocker.entitlements"
+if [[ "$SIGNING_IDENTITY" == "-" ]]; then
+  ENTITLEMENTS_PATH="$OUTPUT_DIR/TimeBlocker-adhoc.entitlements"
+  cp "$ROOT_DIR/TimeBlocker/TimeBlocker.entitlements" "$ENTITLEMENTS_PATH"
+  /usr/libexec/PlistBuddy -c 'Add :com.apple.security.cs.disable-library-validation bool true' "$ENTITLEMENTS_PATH"
+fi
+
 rm -rf "$ARCHIVE_PATH" "$STAGING_DIR" "$DMG_PATH" "$TEMP_DMG_PATH"
 
 xcodebuild \
@@ -25,7 +32,8 @@ xcodebuild \
   CODE_SIGN_STYLE=Manual \
   CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
   CODE_SIGNING_REQUIRED=YES \
-  ENABLE_HARDENED_RUNTIME=YES \
+  CODE_SIGN_ENTITLEMENTS="$ENTITLEMENTS_PATH" \
+  ENABLE_HARDENED_RUNTIME="$HARDENED_RUNTIME" \
   archive
 
 if [[ ! -d "$APP_PATH" ]]; then
