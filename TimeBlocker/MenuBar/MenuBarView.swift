@@ -275,22 +275,7 @@ struct MenuBarView: View {
                                 .padding(.vertical, 8)
                         }
                         ForEach(filteredTodayEvents) { event in
-                            HStack(spacing: 8) {
-                                RoundedRectangle(cornerRadius: 2)
-                                    .fill(Color(calendarHex: event.calendarColorHex))
-                                    .frame(width: 4, height: 28)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(event.timeRange.components(separatedBy: " – ").first ?? "")
-                                        .font(.caption2.monospacedDigit())
-                                        .foregroundStyle(.secondary)
-                                    Text(event.title).font(.caption).lineLimit(1)
-                                }
-                                Spacer(minLength: 0)
-                                Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold)).foregroundStyle(.quaternary)
-                            }
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background(.background.opacity(0.7), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            CalendarEventRow(event: event, model: model)
                         }
                     }
                 }
@@ -388,6 +373,63 @@ struct MenuBarView: View {
         if model.notionToken.isEmpty { return "設定からNotionを接続できます" }
         if model.notionStatus.hasPrefix("Notionと同期済み") { return "未完了タスクはありません" }
         return model.notionStatus
+    }
+}
+
+private struct CalendarEventRow: View {
+    let event: CalendarEvent
+    @ObservedObject var model: AppModel
+    @State private var isConfirmingDelete = false
+    @State private var deleteError: String?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(Color(calendarHex: event.calendarColorHex))
+                .frame(width: 4, height: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.timeRange.components(separatedBy: " – ").first ?? "")
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                Text(event.title).font(.caption).lineLimit(1)
+            }
+            Spacer(minLength: 0)
+            Button {
+                isConfirmingDelete = true
+            } label: {
+                Image(systemName: "trash")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(model.canDeleteEvent(event) ? .secondary : .tertiary)
+                    .frame(width: 22, height: 22)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(!model.canDeleteEvent(event))
+            .help(model.canDeleteEvent(event) ? "予定を削除" : "読み取り専用カレンダーの予定です")
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
+        .background(.background.opacity(0.7), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .confirmationDialog("この予定を削除しますか？", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+            Button("「\(event.title)」を削除", role: .destructive) {
+                do {
+                    try model.deleteEvent(event)
+                } catch {
+                    deleteError = error.localizedDescription
+                }
+            }
+            Button("キャンセル", role: .cancel) {}
+        } message: {
+            Text("予定はカレンダーから削除されます。繰り返し予定の場合はこの回だけが対象です。この操作は取り消せません。")
+        }
+        .alert("予定を削除できませんでした", isPresented: Binding(
+            get: { deleteError != nil },
+            set: { if !$0 { deleteError = nil } }
+        )) {
+            Button("OK", role: .cancel) { deleteError = nil }
+        } message: {
+            Text(deleteError ?? "")
+        }
     }
 }
 

@@ -8,6 +8,7 @@ TimeBlockerは、macOSのメニューバーからカレンダーの予定とNoti
 
 - 通知対象にするカレンダーを選べます。カレンダー名と色で見分けられます。
 - 予定開始の10分前・5分前・定刻から通知タイミングを選べます。
+- 今日の予定一覧から、書き込み可能なカレンダーの予定を確認のうえ削除できます。
 - メニューバー上の表示欄には次の予定とタスクの概要を表示し、次の予定まで6時間以内ならカウントダウンします。TimeBlockerをクリックすると、今日の予定とタスクの一覧を確認できます。
 - 今日の予定は、予定名や場所で絞り込めます。
 - 予定の開始時刻になると、半透明の全画面パネルで知らせます。同じ開始時刻の予定は一つのパネルにまとめます。
@@ -85,7 +86,7 @@ v1.0.3からSparkleで更新を確認します。メニューバーまたは「�
 更新フィードは`appcast.xml`としてGitHubの`main`ブランチから配信します。次のリリースを作るときは、`CFBundleShortVersionString`と`CFBundleVersion`を増やし、アプリをビルドしてからEdDSA署名付き更新アーカイブを登録したフィードを生成します。同名の`TimeBlocker-${VERSION}.md`を`dist/updates`へ置くと、更新画面にリリースノートを表示できます。
 
 ```sh
-VERSION="1.0.5"
+VERSION="1.0.6"
 mkdir -p dist/updates
 ditto -c -k --sequesterRsrc --keepParent \
   dist/TimeBlocker.xcarchive/Products/Applications/TimeBlocker.app \

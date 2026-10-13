@@ -81,6 +81,19 @@ final class EventKitProvider: EventProvider {
         try store.save(event, span: .thisEvent, commit: true)
     }
 
+    func deleteEvent(withIdentifier identifier: String) throws {
+        guard authorizationStatus == .fullAccess else {
+            throw EventDeletionError.calendarAccessRequired
+        }
+        guard let event = store.event(withIdentifier: identifier) else {
+            throw EventDeletionError.eventNotFound
+        }
+        guard event.calendar.allowsContentModifications else {
+            throw EventDeletionError.calendarReadOnly
+        }
+        try store.remove(event, span: .thisEvent, commit: true)
+    }
+
     func observeChanges(_ handler: @escaping () -> Void) -> NSObjectProtocol {
         NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { _ in
             handler()
@@ -110,6 +123,23 @@ enum EventCreationError: LocalizedError {
             return "書き込み可能なカレンダーがありません。"
         case .invalidTimeRange:
             return "終了時刻は開始時刻より後にしてください。"
+        }
+    }
+}
+
+enum EventDeletionError: LocalizedError {
+    case calendarAccessRequired
+    case eventNotFound
+    case calendarReadOnly
+
+    var errorDescription: String? {
+        switch self {
+        case .calendarAccessRequired:
+            return "予定を削除するにはカレンダーへのアクセス許可が必要です。"
+        case .eventNotFound:
+            return "予定が見つかりません。カレンダーを更新してから、もう一度お試しください。"
+        case .calendarReadOnly:
+            return "この予定があるカレンダーは読み取り専用です。"
         }
     }
 }

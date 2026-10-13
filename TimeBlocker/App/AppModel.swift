@@ -150,6 +150,10 @@ final class AppModel: ObservableObject {
         calendars.filter(\.isWritable)
     }
 
+    func canDeleteEvent(_ event: CalendarEvent) -> Bool {
+        calendars.first(where: { $0.id == event.calendarIdentifier })?.isWritable == true
+    }
+
     var defaultCalendarIdentifier: String? {
         provider.defaultCalendarIdentifier
     }
@@ -226,6 +230,12 @@ final class AppModel: ObservableObject {
             calendarIdentifier: calendarIdentifier
         )
         await refresh()
+    }
+
+    func deleteEvent(_ event: CalendarEvent) throws {
+        guard canDeleteEvent(event) else { throw EventDeletionError.calendarReadOnly }
+        try provider.deleteEvent(withIdentifier: event.id)
+        Task { await refresh() }
     }
 
     func dismissOverlay() {
