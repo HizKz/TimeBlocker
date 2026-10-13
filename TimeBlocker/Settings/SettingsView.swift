@@ -134,6 +134,15 @@ struct SettingsView: View {
             }
 
             Section("通知") {
+                Picker("予定開始の通知", selection: $model.eventNotificationLeadMinutes) {
+                    Text("10分前").tag(10)
+                    Text("5分前").tag(5)
+                    Text("定刻").tag(0)
+                }
+                Text("予定の開始前、または開始時刻に通知します。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 Picker("スリープ復帰後の通知期限", selection: $model.notificationGraceMinutes) {
                     ForEach([1, 3, 5, 10, 15], id: \.self) { minutes in
                         Text("予定開始から\(minutes)分").tag(minutes)

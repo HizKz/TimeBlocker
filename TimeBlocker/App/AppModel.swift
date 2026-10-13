@@ -37,6 +37,9 @@ final class AppModel: ObservableObject {
     @Published var notificationGraceMinutes = 5 {
         didSet { UserDefaults.standard.set(notificationGraceMinutes, forKey: Self.notificationGraceKey) }
     }
+    @Published var eventNotificationLeadMinutes = 0 {
+        didSet { UserDefaults.standard.set(eventNotificationLeadMinutes, forKey: Self.eventNotificationLeadKey) }
+    }
     @Published var overlayDisplayMode: OverlayDisplayMode = .allDisplays {
         didSet { UserDefaults.standard.set(overlayDisplayMode.rawValue, forKey: Self.overlayDisplayKey) }
     }
@@ -57,6 +60,7 @@ final class AppModel: ObservableObject {
 
     private static let selectionKey = "selectedCalendarIdentifiers"
     private static let notificationGraceKey = "notificationGraceMinutes"
+    private static let eventNotificationLeadKey = "eventNotificationLeadMinutes"
     private static let overlayDisplayKey = "overlayDisplayMode"
     private static let quickAddDurationKey = "quickAddDefaultDurationMinutes"
     private static let quickAddCalendarKey = "quickAddCalendarIdentifier"
@@ -88,6 +92,10 @@ final class AppModel: ObservableObject {
         snoozedBatches = snoozeStore.load()
         if defaults.object(forKey: Self.notificationGraceKey) != nil {
             notificationGraceMinutes = defaults.integer(forKey: Self.notificationGraceKey)
+        }
+        if defaults.object(forKey: Self.eventNotificationLeadKey) != nil {
+            let storedLead = defaults.integer(forKey: Self.eventNotificationLeadKey)
+            eventNotificationLeadMinutes = [0, 5, 10].contains(storedLead) ? storedLead : 0
         }
         if defaults.object(forKey: Self.overlayDisplayKey) != nil,
            let storedMode = OverlayDisplayMode(rawValue: defaults.string(forKey: Self.overlayDisplayKey) ?? "") {
@@ -380,8 +388,12 @@ final class AppModel: ObservableObject {
         }
 
         let due = upcomingEvents.filter {
+            guard !history.hasHandled($0) else { return false }
+            let notificationAt = $0.startAt.addingTimeInterval(-TimeInterval(eventNotificationLeadMinutes * 60))
+            guard now >= notificationAt else { return false }
+            if now < $0.startAt { return true }
             let age = now.timeIntervalSince($0.startAt)
-            return age >= 0 && age <= TimeInterval(notificationGraceMinutes * 60) && !history.hasHandled($0)
+            return age <= TimeInterval(notificationGraceMinutes * 60)
         }
         guard !due.isEmpty else { return }
         let grouped = Dictionary(grouping: due, by: \.startAt)

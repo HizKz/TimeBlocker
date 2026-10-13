@@ -3,6 +3,18 @@
     <channel>
         <title>TimeBlocker</title>
         <item>
+            <title>1.0.5</title>
+            <pubDate>Tue, 13 Oct 2026 17:50:15 +0900</pubDate>
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>1.0.5</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.5
+
+- 予定開始の10分前・5分前・定刻から通知タイミングを選べるようになりました。
+]]></description>
+            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.5/TimeBlocker-1.0.5.zip" length="4060561" type="application/octet-stream" sparkle:edSignature="4ldrfdpT7Sdbx3R1Q+az+/lmhaF0A+pl8vajp5gfDrSI/oeG7/aukmKWcBO3rBLY4Y8F9uKL1mA6jTgrJb2+Aw=="/>
+        </item>
+        <item>
             <title>1.0.4</title>
             <pubDate>Tue, 13 Oct 2026 17:12:45 +0900</pubDate>
             <sparkle:version>5</sparkle:version>
