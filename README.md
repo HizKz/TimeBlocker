@@ -52,6 +52,8 @@ TimeBlockerはメニューバーアプリです。通常のDockアイコンや�
 
 配布用のUniversalアプリとDMGは、次のコマンドで作成できます。成果物は`dist/TimeBlocker.dmg`です。
 
+DMGを開くと、TimeBlockerのアイコンとApplicationsフォルダを案内付きの背景に並べて表示します。
+
 ```sh
 ./scripts/package-release.sh
 ```

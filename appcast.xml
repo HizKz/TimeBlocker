@@ -8,7 +8,7 @@
             <sparkle:version>3</sparkle:version>
             <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.2/TimeBlocker-1.0.2.dmg" length="4415564" type="application/octet-stream" sparkle:edSignature="1xRqZNzpZFpQQwOFo5XauBfstVJjQKiq/bfYAfg2E4DZ9vYAEc2UhpMZG4FBRk7uaJVGvNofhT8aKoqodPW3DQ=="/>
+            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.2/TimeBlocker-1.0.2.dmg" length="4136533" type="application/octet-stream" sparkle:edSignature="52zg03qaBAWFYw1olPK4LFpPxMZCYz/YF7WB2JFbhV/z7ol4ARikQSyu8bupPBaczt8a8yCJsV6wNqP1AGO6Cw=="/>
             <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.2
 
 - Sparkleによる自動アップデート確認を追加しました。

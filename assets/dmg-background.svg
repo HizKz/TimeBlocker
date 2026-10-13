@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="880" viewBox="0 0 660 440">
+  <rect width="660" height="440" fill="#f8f7f3"/>
+
+  <g font-family="sans-serif" fill="#17233c">
+    <rect x="44" y="37" width="4" height="17" rx="2" fill="#e87560"/>
+    <text x="58" y="51" font-size="13" font-weight="700" letter-spacing="1.1">TimeBlocker</text>
+    <text x="44" y="111" font-size="27" font-weight="700">TimeBlockerをインストール</text>
+    <text x="45" y="145" font-size="14" fill="#667080">アプリのアイコンを Applications へドラッグしてください。</text>
+  </g>
+
+  <path d="M44 177.5H616" stroke="#e4e1d9" stroke-width="1"/>
+
+  <g fill="none" stroke="#e87560" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M289 270h78" stroke-dasharray="2 7"/>
+    <path d="m357 262 9 8-9 8"/>
+  </g>
+
+  <path d="M44 389.5H616" stroke="#e4e1d9" stroke-width="1"/>
+  <g font-family="sans-serif" fill="#667080">
+    <text x="44" y="416" font-size="12">インストール後は、メニューバーから起動できます。</text>
+    <text x="616" y="416" font-size="11" text-anchor="end" letter-spacing="1">MAC APP</text>
+  </g>
+</svg>
