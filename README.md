@@ -48,6 +48,26 @@ TimeBlockerは、macOSのメニューバーからカレンダーの予定とNoti
 
 TimeBlockerはメニューバーアプリです。通常のDockアイコンやメインウィンドウは表示しません。アプリを終了するには、メニューバーのTimeBlockerを開いて「終了」を選びます。
 
+## 配布用アプリの作成
+
+配布用のUniversalアプリとDMGは、次のコマンドで作成できます。成果物は`dist/TimeBlocker.dmg`です。
+
+```sh
+./scripts/package-release.sh
+```
+
+署名証明書を指定しない場合はアドホック署名で作成します。自分のMacでの確認用で、ほかのMacへ配布するとGatekeeperに止められる場合があります。一般向けに配布する場合はApple Developer ProgramのDeveloper ID Application証明書で署名し、公証してください。
+
+Developer ID証明書をキーチェーンに登録済みで、公証用の`notarytool`プロファイルも作成済みの場合は、次のように実行します。
+
+```sh
+DEVELOPER_ID_APPLICATION="Developer ID Application: Your Name (TEAMID)" \
+NOTARY_PROFILE="TimeBlocker-notary" \
+./scripts/package-release.sh
+```
+
+`DEVELOPER_ID_APPLICATION`には`security find-identity -v -p codesigning`に表示される証明書名、`NOTARY_PROFILE`には`xcrun notarytool store-credentials`で登録したプロファイル名を指定します。
+
 ## Notionとの接続
 
 ### 1. Notion Integrationを用意する
