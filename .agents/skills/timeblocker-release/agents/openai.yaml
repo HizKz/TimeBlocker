@@ -1,0 +1,4 @@
+interface:
+  display_name: "TimeBlocker Release"
+  short_description: "Prepare and validate macOS releases"
+  default_prompt: "Prepare a TimeBlocker release and check its version, DMG, and Sparkle appcast."

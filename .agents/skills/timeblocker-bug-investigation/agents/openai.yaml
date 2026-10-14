@@ -1,0 +1,4 @@
+interface:
+  display_name: "TimeBlocker Bug Investigation"
+  short_description: "Trace and diagnose app bugs"
+  default_prompt: "Investigate this TimeBlocker bug, trace the relevant code path, and report the evidence."
