@@ -3,6 +3,19 @@
     <channel>
         <title>TimeBlocker</title>
         <item>
+            <title>1.0.8</title>
+            <pubDate>Fri, 06 Nov 2026 11:21:09 +0900</pubDate>
+            <sparkle:version>9</sparkle:version>
+            <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description sparkle:format="markdown"><![CDATA[# TimeBlocker 1.0.8
+
+- 期限のないNotionタスクを一覧やメニューバーに表示しないようにしました。
+- 数式で設定した期限にも対応し、同期時に期限が削除された通知を整理します。
+]]></description>
+            <enclosure url="https://github.com/HizKz/TimeBlocker/releases/download/v1.0.8/TimeBlocker-1.0.8.zip" length="4087749" type="application/octet-stream" sparkle:edSignature="3jll5HLZHetiI5XqVZTrCno/IOn2Pmkhe9/Sm2yzqUD2S3XaCDYWdr3EcGPTfKjT53IgqMVyInlraFKSVdGtAQ=="/>
+        </item>
+        <item>
             <title>1.0.7</title>
             <pubDate>Tue, 13 Oct 2026 18:03:34 +0900</pubDate>
             <sparkle:version>8</sparkle:version>
