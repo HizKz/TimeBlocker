@@ -298,6 +298,7 @@ final class AppModel: ObservableObject {
         lastNotionAttempt = .now
         do {
             notionTasks = try await notionProvider.fetchTasks(configuration: notionConfiguration)
+                .filter { $0.dueAt != nil }
             notionStatus = "Notionと同期済み（\(notionTasks.count)件）"
             await tickNotion()
         } catch {

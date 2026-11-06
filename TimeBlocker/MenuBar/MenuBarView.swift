@@ -14,7 +14,6 @@ struct MenuBarStatusLabel: View {
 
     private var taskForStatus: NotionTask? {
         todayNotionTasks.first
-            ?? model.notionTasks.first(where: { $0.dueAt == nil })
             ?? model.notionTasks.first
     }
 
@@ -72,8 +71,6 @@ struct MenuBarStatusLabel: View {
         let dateLabel: String
         if let dueAt = task.dueAt, Calendar.current.isDateInToday(dueAt) {
             dateLabel = "今日: "
-        } else if task.dueAt == nil {
-            dateLabel = "期限なし: "
         } else {
             dateLabel = "タスク: "
         }
@@ -517,6 +514,10 @@ private struct NotionQuickAddTaskForm: View {
                     .toggleStyle(.checkbox)
                 DatePicker("期限", selection: $dueAt, displayedComponents: isDateOnly ? [.date] : [.date, .hourAndMinute])
                     .datePickerStyle(.field)
+            } else {
+                Text("期限のないタスクはNotionに追加されますが、ここには表示されません。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             if let errorMessage {
                 Text(errorMessage).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true)
