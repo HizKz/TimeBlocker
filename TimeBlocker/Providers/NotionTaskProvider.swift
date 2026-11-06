@@ -165,7 +165,9 @@ final class NotionTaskProvider {
               let title = propertyTitle(titleProperty), !title.isEmpty,
               !isComplete(props[configuration.completionProperty], configuration: configuration) else { return nil }
         let dueProperty = props[configuration.dueDateProperty]
-        let dateValue = (dueProperty?["date"] as? [String: Any])?["start"] as? String
+        let date = (dueProperty?["date"] as? [String: Any])
+            ?? ((dueProperty?["formula"] as? [String: Any])?["date"] as? [String: Any])
+        let dateValue = date?["start"] as? String
         let isDateOnly = dateValue.map { !$0.contains("T") } ?? false
         let dueAt = dateValue.flatMap(parseISODate)
         return NotionTask(id: id, title: title, dueAt: dueAt, isDateOnly: isDateOnly, url: url)
