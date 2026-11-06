@@ -300,6 +300,18 @@ final class AppModel: ObservableObject {
             notionTasks = try await notionProvider.fetchTasks(configuration: notionConfiguration)
                 .filter { $0.dueAt != nil }
             notionStatus = "Notionと同期済み（\(notionTasks.count)件）"
+            if !activeNotionTasks.isEmpty {
+                let activeIDs = Set(activeNotionTasks.map(\.id))
+                let refreshedTasks = notionTasks.filter { activeIDs.contains($0.id) }
+                if refreshedTasks.isEmpty {
+                    notionActionError = nil
+                    overlayManager.dismiss()
+                    activeNotionTasks = []
+                    showNextNotification()
+                } else if Set(refreshedTasks) != Set(activeNotionTasks) {
+                    presentNotion(refreshedTasks)
+                }
+            }
             await tickNotion()
         } catch {
             notionStatus = error.localizedDescription
